@@ -7,7 +7,8 @@ import {
   IArticuloManufacturado,
 } from "../../../types/empresa";
 import useCloudinary from "../../../hooks/useCloudinary";
-import { Box, CardMedia } from "@mui/material";
+import { Box, CardMedia, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import styles from "./ModalDetalle.module.css";
 import Carousel from "./CarouselModal";
 
@@ -31,37 +32,56 @@ export const ModalDetalle: React.FC<ModalDetalleProps> = ({
     return (articulo as IPromocion).precioPromocional !== undefined;
   };
 
+  const esManufacturado = (
+    articulo: IArticulo | IPromocion
+  ): articulo is IArticuloManufacturado => {
+    return (articulo as IArticuloManufacturado).descripcion !== undefined;
+  };
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box className={styles.modalBox}>
-        <Box>
-          {imageUrls.length > 1 ? (
-            <Carousel images={imageUrls} />
-          ) : (
-            <CardMedia
-              component="img"
-              className={styles.modalBoxMedia}
-              image={imageUrls[0]}
-              alt={articulo.denominacion}
-            />
-          )}
-        </Box>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            right: 3,
+            top: -3,
+            color: "red",
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        {imageUrls.length > 1 ? (
+          <Carousel images={imageUrls} />
+        ) : (
+          <CardMedia
+            component="img"
+            className={styles.modalBoxMedia}
+            image={imageUrls[0]}
+            alt={articulo.denominacion}
+          />
+        )}
         <Typography
           variant="h3"
           component="h2"
-          sx={{ fontSize: { xs: "2rem" } }}
+          sx={{ fontSize: { xs: "2rem" }, paddingLeft: "16px" }}
         >
           {articulo.denominacion}
         </Typography>
         {/* Verifica si el artículo es IArticulo antes de acceder a sus propiedades específicas */}
-        {!esPromocion(articulo) && (
-          <Typography variant="h6" sx={{ mt: 2 }}>
+        {!esPromocion(articulo) && esManufacturado(articulo) && (
+          <Typography variant="h6" sx={{ mt: 2, paddingLeft: "16px" }}>
             {(articulo as IArticuloManufacturado).descripcion}
           </Typography>
         )}
 
         {/* Muestra el precio dependiendo del tipo de artículo */}
-        <Typography variant="h6" sx={{ mt: 2 }}>
+        <Typography
+          variant="h6"
+          sx={{ mt: 2, paddingLeft: "16px", paddingBottom: "16px" }}
+        >
           Precio: $
           {esPromocion(articulo)
             ? articulo.precioPromocional
