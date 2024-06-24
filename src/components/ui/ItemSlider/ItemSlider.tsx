@@ -4,7 +4,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { ICategoria, IPromocion, ISucursal } from "../../../types/empresa";
 import { useAppDispatch } from "../../../redux/HookReducer";
-import { setSucursal } from "../../../redux/slices/SelectedData";
+import {
+  setSelectedCategoria,
+  setSucursal,
+} from "../../../redux/slices/SelectedData";
 import { useNavigate } from "react-router-dom";
 import { useWindowResize } from "../../../hooks/useWindowRezise";
 import { Stack } from "@mui/material";
@@ -27,7 +30,7 @@ const transformToSlideItems = (
   return data.map((item) => ({
     id: item.id || 0,
     logo: (item as ISucursal).imagenSucursal?.url || undefined,
-    imagen: (item as IPromocion).imagenes?.[0]?.url || undefined,
+    imagenes: (item as IPromocion).imagenes || undefined,
     nombre:
       (item as ICategoria).denominacion ||
       (item as ISucursal).nombre ||
@@ -86,12 +89,24 @@ export const SliderGenerico: React.FC<SliderProps> = ({ items }) => {
     setIsDragging(true); // Cambiar a arrastrando
   };
 
-  const handleMouseUp = (sucursal: ISucursal) => {
+  const handleMouseUp = (item: SlideItem) => {
     if (!isDragging) {
-      // Si no se está arrastrando, navegar a la sucursal
-      dispatch(setSucursal(sucursal));
-      navigate(`/menu`);
-      console.log("clickeado en la sucursal: ", sucursal);
+      const categoriaSeleccionada = items.find(
+        (i) => i.id === item.id
+      ) as ICategoria;
+      if (!item.logo && !item.imagenes) {
+        // Es una categoría
+        dispatch(setSelectedCategoria(categoriaSeleccionada));
+        navigate(`/sucursales`);
+      } else if (item.logo !== undefined || item.imagenes !== undefined) {
+        // Es una sucursal
+        dispatch(setSucursal(item as ISucursal));
+        navigate(`/menu`);
+        console.log("Clickeado en la sucursal: ", item);
+      } else if ("precioPromocional" in item) {
+        // En caso de que sea una promoción (mickey herramienta misteriosa)
+        // navigate(`/promociones/${item.id}`);
+      }
     }
   };
 
@@ -103,16 +118,20 @@ export const SliderGenerico: React.FC<SliderProps> = ({ items }) => {
           key={item.id}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
-          onMouseUp={() => handleMouseUp(item as ISucursal)}
+          onMouseUp={() => handleMouseUp(item)}
         >
-          <Stack className="Stack" spacing={2}>
+          <Stack
+            className={item.logo || item.imagenes ? "Stack" : "StackNoImg"}
+            spacing={2}
+          >
             {(item.imagenes && item.imagenes[0] && item.imagenes[0].url) ||
               (item.logo && (
                 <img
-                  src={item.logo || item.imagenes![0].url}
+                  src={item.logo || (item.imagenes && item.imagenes[0].url)}
                   alt={item.nombre}
                 />
-              ))}
+              )) ||
+              null}
             <h5>{item.nombre}</h5>
           </Stack>
         </div>
