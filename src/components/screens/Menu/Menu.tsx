@@ -14,6 +14,7 @@ import { SucursalService } from "../../../services/SucursalService";
 
 const PantallaMenu: React.FC = () => {
   const [_isOpen, setIsOpen] = useState<boolean>(true);
+  const [ultimaSucursalId, setUltimaSucursalId] = useState<number | null>(null);
   const dispatch = useAppDispatch();
   const sucursal = useAppSelector(
     (state: RootState) => state.selectedData.sucursal
@@ -27,46 +28,46 @@ const PantallaMenu: React.FC = () => {
 
   useEffect(() => {
     const traerCategoriasYHorario = async () => {
+      if (!sucursal?.id) return;
+      if (ultimaSucursalId === sucursal.id) return;
+
       try {
-        if (sucursal?.id && categoriasSucursal === null) {
-          const sucursalService = new SucursalService("/sucursales");
-          const categorias = await sucursalService.getCategorias(sucursal.id);
-          const filteredCategorias = categorias.filter((c) => c.esParaVender);
-          dispatch(setCategoriasSucursal(filteredCategorias));
+        const sucursalService = new SucursalService("/sucursales");
+        const categorias = await sucursalService.getCategorias(sucursal.id);
+        const filteredCategorias = categorias.filter((c) => c.esParaVender);
+        dispatch(setCategoriasSucursal(filteredCategorias));
+        setUltimaSucursalId(sucursal.id);
 
-          // Establece una categoría default
-          if (!selectedCategoria) {
-            dispatch(setCategoriaDefault(filteredCategorias[0]));
-            dispatch(setSelectedCategoria(filteredCategorias[0]));
-          }
-
-          // Obtiene datos de la sucursal
-          const sucursalData = await sucursalService.getById(sucursal.id);
-          const horarioApertura = sucursalData!.horarioApertura;
-          const horarioCierre = sucursalData!.horarioCierre;
-
-          const now = new Date();
-          const apertura = new Date();
-          const cierre = new Date();
-          const [horaApertura, minutoApertura] = horarioApertura
-            .split(":")
-            .map(Number);
-          const [horaCierre, minutoCierre] = horarioCierre
-            .split(":")
-            .map(Number);
-
-          apertura.setHours(horaApertura, minutoApertura, 0);
-          cierre.setHours(horaCierre, minutoCierre, 0);
-
-          setIsOpen(now >= apertura && now <= cierre);
+        if (!selectedCategoria) {
+          dispatch(setCategoriaDefault(filteredCategorias[0]));
+          dispatch(setSelectedCategoria(filteredCategorias[0]));
         }
+
+        const sucursalData = await sucursalService.getById(sucursal.id);
+        const horarioApertura = sucursalData!.horarioApertura;
+        const horarioCierre = sucursalData!.horarioCierre;
+
+        const now = new Date();
+        const apertura = new Date();
+        const cierre = new Date();
+        const [horaApertura, minutoApertura] = horarioApertura
+          .split(":")
+          .map(Number);
+        const [horaCierre, minutoCierre] = horarioCierre
+          .split(":")
+          .map(Number);
+
+        apertura.setHours(horaApertura, minutoApertura, 0);
+        cierre.setHours(horaCierre, minutoCierre, 0);
+
+        setIsOpen(now >= apertura && now <= cierre);
       } catch (error) {
         console.error("Error al traer las categorías o el horario:", error);
       }
     };
 
     traerCategoriasYHorario();
-  }, [sucursal?.id, categoriasSucursal, dispatch]);
+  }, [sucursal?.id, ultimaSucursalId, selectedCategoria, dispatch]);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
