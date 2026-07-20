@@ -30,6 +30,8 @@ const originalFetch = globalThis.fetch;
   });
 })();
 
+const API_BASE = "http://localhost:8080";
+
 export function setupMockApi() {
   console.log("[MockAPI] Mock API activado — no se requiere backend");
 
@@ -47,6 +49,13 @@ export function setupMockApi() {
     const resolved = await handleMockRequest(url, init);
     if (resolved) {
       return resolved;
+    }
+
+    if (url.includes(API_BASE)) {
+      return new Response(
+        JSON.stringify({ error: `Mock: ruta no interceptada ${url}` }),
+        { status: 404, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     return originalFetch(input, init);

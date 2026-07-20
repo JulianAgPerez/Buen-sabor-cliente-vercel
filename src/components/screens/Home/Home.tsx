@@ -22,8 +22,6 @@ export const Home: React.FC = () => {
   } = useFetch<ICategoria[]>("/categorias");
   const dispatch = useAppDispatch();
 
-  if (errorSucursal || errorCategoria) return <h1>Error :c</h1>;
-  console.log("data de categorias: ", categorias);
   useEffect(() => {
     if (sucursales) {
       const randomSucursal =
@@ -32,6 +30,8 @@ export const Home: React.FC = () => {
       console.log("sucursal obtenida: ", randomSucursal);
     }
   }, [sucursales, dispatch]);
+
+  if (errorSucursal || errorCategoria) return <h1>Error :c</h1>;
 
   return (
     <Box className={styles.homeContainer}>

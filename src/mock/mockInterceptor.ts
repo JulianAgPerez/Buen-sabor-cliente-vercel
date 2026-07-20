@@ -197,5 +197,8 @@ export async function handleMockRequest(
     }
   }
 
-  return null;
+  return new Response(
+    JSON.stringify({ error: `Mock: ruta no implementada ${method} ${pathname}` }),
+    { status: 404, headers: { "Content-Type": "application/json" } }
+  );
 }

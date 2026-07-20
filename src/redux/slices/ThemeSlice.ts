@@ -30,7 +30,7 @@ const themeSlice = createSlice({
           currentTheme: newTheme,
         };
 
-        localStorage.setItem('theme', JSON.stringify({ isDarkMode, currentTheme: newTheme }));
+        localStorage.setItem('theme', JSON.stringify({ isDarkMode }));
 
         return newState;
       },
