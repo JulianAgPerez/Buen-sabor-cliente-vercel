@@ -14,7 +14,6 @@ import {
   mockUnidadesMedida,
 } from "./mockData";
 
-const API_BASE = "http://localhost:8080";
 const SIMULATED_DELAY_MS = 300;
 
 function getUrlObj(url: string): URL | null {
@@ -77,8 +76,6 @@ export async function handleMockRequest(
   url: string,
   options?: RequestInit
 ): Promise<Response | null> {
-  if (!url.includes(API_BASE)) return null;
-
   const method = options?.method || "GET";
   const urlObj = getUrlObj(url);
   if (!urlObj) return null;

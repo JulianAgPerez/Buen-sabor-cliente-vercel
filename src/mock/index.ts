@@ -1,8 +1,6 @@
 import { handleMockRequest } from "./mockInterceptor";
 
-const originalFetch = globalThis.fetch;
-
-// ← Se ejecuta durante la fase de import, ANTES de que cualquier slice de Redux lea localStorage
+// Limpieza de localStorage corrupto ANTES de que Redux lea
 (() => {
   const themeRaw = localStorage.getItem("theme");
   if (themeRaw) {
@@ -30,8 +28,6 @@ const originalFetch = globalThis.fetch;
   });
 })();
 
-const API_BASE = "http://localhost:8080";
-
 export function setupMockApi() {
   console.log("[MockAPI] Mock API activado — no se requiere backend");
 
@@ -51,13 +47,11 @@ export function setupMockApi() {
       return resolved;
     }
 
-    if (url.includes(API_BASE)) {
-      return new Response(
-        JSON.stringify({ error: `Mock: ruta no interceptada ${url}` }),
-        { status: 404, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    return originalFetch(input, init);
+    // Cualquier request que no matchee un mock se devuelve como 404 local
+    console.warn(`[MockAPI] Ruta no mockeada: ${init?.method || "GET"} ${url}`);
+    return new Response(
+      JSON.stringify({ error: `Mock: ruta no implementada ${url}` }),
+      { status: 404, headers: { "Content-Type": "application/json" } }
+    );
   };
 }
