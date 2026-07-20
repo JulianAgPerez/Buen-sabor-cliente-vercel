@@ -91,10 +91,15 @@ export const mockCategorias: ICategoria[] = [
   },
 ];
 
+const subCat = (parentId: number, subIndex: number): ICategoria => {
+  const parent = mockCategorias.find((c) => c.id === parentId)!;
+  return parent.subCategorias![subIndex];
+};
+
 export const mockArticulosManufacturados: IArticuloManufacturado[] = [
   {
     id: 1, denominacion: "Hamburguesa Clásica", precioVenta: 1200, esInsumo: false,
-    categoria: mockCategorias[0], categoriaId: 1,
+    categoria: subCat(1, 0), categoriaId: 11,
     unidadMedida: mockUnidadesMedida[0], unidadMedidaId: 1,
     imagenes: [{ id: "img-1", url: `${U}-1568901346375-23c9450c58cd?w=400&h=300&fit=crop`, name: "burger-clasica" }],
     descripcion: "Hamburguesa con carne, lechuga, tomate y queso",
@@ -105,7 +110,7 @@ export const mockArticulosManufacturados: IArticuloManufacturado[] = [
   },
   {
     id: 2, denominacion: "Hamburguesa con Cheddar", precioVenta: 1500, esInsumo: false,
-    categoria: mockCategorias[0], categoriaId: 1,
+    categoria: subCat(1, 0), categoriaId: 11,
     unidadMedida: mockUnidadesMedida[0], unidadMedidaId: 1,
     imagenes: [{ id: "img-2", url: `${U}-1550547660-d9450f859349?w=400&h=300&fit=crop`, name: "burger-cheddar" }],
     descripcion: "Hamburguesa con doble cheddar y bacon",
@@ -116,7 +121,7 @@ export const mockArticulosManufacturados: IArticuloManufacturado[] = [
   },
   {
     id: 3, denominacion: "Hamburguesa Veggie", precioVenta: 1300, esInsumo: false,
-    categoria: mockCategorias[0], categoriaId: 1,
+    categoria: subCat(1, 1), categoriaId: 12,
     unidadMedida: mockUnidadesMedida[0], unidadMedidaId: 1,
     imagenes: [{ id: "img-3", url: `${U}-1520072959219-c595dc870360?w=400&h=300&fit=crop`, name: "burger-veggie" }],
     descripcion: "Hamburguesa de lentejas con vegetales frescos",
@@ -127,7 +132,7 @@ export const mockArticulosManufacturados: IArticuloManufacturado[] = [
   },
   {
     id: 4, denominacion: "Pizza Mozzarella", precioVenta: 1800, esInsumo: false,
-    categoria: mockCategorias[1], categoriaId: 2,
+    categoria: subCat(2, 0), categoriaId: 21,
     unidadMedida: mockUnidadesMedida[0], unidadMedidaId: 1,
     imagenes: [{ id: "img-4", url: `${U}-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop`, name: "pizza-mozza" }],
     descripcion: "Pizza clásica con mozzarella y orégano",
@@ -138,7 +143,7 @@ export const mockArticulosManufacturados: IArticuloManufacturado[] = [
   },
   {
     id: 5, denominacion: "Pizza Napolitana", precioVenta: 2200, esInsumo: false,
-    categoria: mockCategorias[1], categoriaId: 2,
+    categoria: subCat(2, 1), categoriaId: 22,
     unidadMedida: mockUnidadesMedida[0], unidadMedidaId: 1,
     imagenes: [{ id: "img-5", url: `${U}-1574071318508-1cdbab80d002?w=400&h=300&fit=crop`, name: "pizza-napo" }],
     descripcion: "Pizza con mozzarella, tomate fresco y albahaca",
@@ -149,7 +154,7 @@ export const mockArticulosManufacturados: IArticuloManufacturado[] = [
   },
   {
     id: 6, denominacion: "Pizza Pepperoni", precioVenta: 2500, esInsumo: false,
-    categoria: mockCategorias[1], categoriaId: 2,
+    categoria: subCat(2, 1), categoriaId: 22,
     unidadMedida: mockUnidadesMedida[0], unidadMedidaId: 1,
     imagenes: [{ id: "img-6", url: `${U}-1628840042765-356cda07504e?w=400&h=300&fit=crop`, name: "pizza-pepperoni" }],
     descripcion: "Pizza con pepperoni y queso extra",
@@ -160,7 +165,7 @@ export const mockArticulosManufacturados: IArticuloManufacturado[] = [
   },
   {
     id: 7, denominacion: "Helado de Chocolate", precioVenta: 800, esInsumo: false,
-    categoria: mockCategorias[3], categoriaId: 4,
+    categoria: subCat(4, 0), categoriaId: 41,
     unidadMedida: mockUnidadesMedida[0], unidadMedidaId: 1,
     imagenes: [{ id: "img-7", url: `${U}-1501443762994-82bd5dace89a?w=400&h=300&fit=crop`, name: "helado-choco" }],
     descripcion: "Helado artesanal de chocolate belga",
@@ -171,7 +176,7 @@ export const mockArticulosManufacturados: IArticuloManufacturado[] = [
   },
   {
     id: 8, denominacion: "Torta de Frutilla", precioVenta: 1500, esInsumo: false,
-    categoria: mockCategorias[3], categoriaId: 4,
+    categoria: subCat(4, 1), categoriaId: 42,
     unidadMedida: mockUnidadesMedida[0], unidadMedidaId: 1,
     imagenes: [{ id: "img-8", url: `${U}-1565958011703-44f9829ba187?w=400&h=300&fit=crop`, name: "torta-frutilla" }],
     descripcion: "Torta con crema y frutillas frescas",
@@ -185,28 +190,28 @@ export const mockArticulosManufacturados: IArticuloManufacturado[] = [
 export const mockArticulosInsumos: IArticulo[] = [
   {
     id: 101, denominacion: "Coca-Cola 500ml", precioVenta: 500, esInsumo: true,
-    categoria: mockCategorias[2], categoriaId: 3,
+    categoria: subCat(3, 0), categoriaId: 31,
     unidadMedida: mockUnidadesMedida[4], unidadMedidaId: 5,
     imagenes: [{ id: "img-101", url: `${U}-1554866585-cd94860890b7?w=200&h=300&fit=crop`, name: "coca-500" }],
     stockActual: 200, stockMinimo: 20,
   },
   {
     id: 102, denominacion: "Sprite 500ml", precioVenta: 500, esInsumo: true,
-    categoria: mockCategorias[2], categoriaId: 3,
+    categoria: subCat(3, 0), categoriaId: 31,
     unidadMedida: mockUnidadesMedida[4], unidadMedidaId: 5,
     imagenes: [{ id: "img-102", url: `${U}-1629203851122-3726ec8cb81c?w=200&h=300&fit=crop`, name: "sprite-500" }],
     stockActual: 180, stockMinimo: 20,
   },
   {
     id: 103, denominacion: "Agua Mineral 500ml", precioVenta: 350, esInsumo: true,
-    categoria: mockCategorias[2], categoriaId: 3,
+    categoria: subCat(3, 1), categoriaId: 32,
     unidadMedida: mockUnidadesMedida[4], unidadMedidaId: 5,
     imagenes: [{ id: "img-103", url: `${U}-1523362628745-0c100150b504?w=200&h=300&fit=crop`, name: "agua-500" }],
     stockActual: 150, stockMinimo: 30,
   },
   {
     id: 104, denominacion: "Agua Saborizada 500ml", precioVenta: 400, esInsumo: true,
-    categoria: mockCategorias[2], categoriaId: 3,
+    categoria: subCat(3, 1), categoriaId: 32,
     unidadMedida: mockUnidadesMedida[4], unidadMedidaId: 5,
     imagenes: [{ id: "img-104", url: `${U}-1534352956036-cd81e27dd615?w=200&h=300&fit=crop`, name: "agua-sabor" }],
     stockActual: 90, stockMinimo: 15,

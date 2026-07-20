@@ -72,6 +72,14 @@ function paginate<T>(items: T[], page: number, size: number) {
   return { content, totalPages: Math.ceil(items.length / size) };
 }
 
+function resolveCategoriaIds(catId: number): number[] {
+  const cat = mockCategorias.find((c) => c.id === catId);
+  if (cat && cat.subCategorias && cat.subCategorias.length > 0) {
+    return [catId, ...cat.subCategorias.map((s) => s.id!)];
+  }
+  return [catId];
+}
+
 export async function handleMockRequest(
   url: string,
   options?: RequestInit
@@ -133,10 +141,8 @@ export async function handleMockRequest(
         );
       }
       if (query["categoriaId"]) {
-        const catId = Number(query["categoriaId"]);
-        items = items.filter(
-          (a) => a.categoriaId === catId || a.categoria?.id === catId
-        );
+        const catIds = resolveCategoriaIds(Number(query["categoriaId"]));
+        items = items.filter((a) => catIds.includes(a.categoriaId!));
       }
       return okResponse(paginate(items, page, size));
     }
@@ -150,10 +156,8 @@ export async function handleMockRequest(
         );
       }
       if (query["categoriaId"]) {
-        const catId = Number(query["categoriaId"]);
-        items = items.filter(
-          (a) => a.categoriaId === catId || a.categoria?.id === catId
-        );
+        const catIds = resolveCategoriaIds(Number(query["categoriaId"]));
+        items = items.filter((a) => catIds.includes(a.categoriaId!));
       }
       return okResponse(paginate(items, page, size));
     }
